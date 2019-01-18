@@ -6767,7 +6767,7 @@
   (segment (start 157.69 89.79) (end 157.115 89.79) (width 0.25) (layer Vorderseite) (net 18) (tstamp 5AFEAD38))
   (segment (start 158.8807 90.9807) (end 157.69 89.79) (width 0.25) (layer Vorderseite) (net 18) (tstamp 5AFEAD36))
 
-  (zone (net 1) (net_name GND) (layer Rückseite) (tstamp 5AFEABD6) (hatch edge 0.508)
+  (zone (net 1) (net_name GND) (layer Rückseite) (tstamp 5C41F6D8) (hatch edge 0.508)
     (connect_pads yes (clearance 0.15))
     (min_thickness 0.15)
     (fill yes (arc_segments 16) (thermal_gap 0.29972) (thermal_bridge_width 0.29972))
