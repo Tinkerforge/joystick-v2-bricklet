@@ -40,6 +40,12 @@ typedef struct {
     
     int16_t x_cal;
     int16_t y_cal;
+
+	bool position_callback_value_has_to_change;
+	uint32_t position_callback_period;
+
+	bool pressed_callback_value_has_to_change;
+	uint32_t pressed_callback_period;
 } Joystick;
 
 extern Joystick joystick;

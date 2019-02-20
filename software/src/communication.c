@@ -23,6 +23,7 @@
 
 #include "bricklib2/utility/communication_callback.h"
 #include "bricklib2/protocols/tfp/tfp.h"
+#include "bricklib2/hal/system_timer/system_timer.h"
 
 #include "joystick.h"
 
@@ -62,23 +63,31 @@ BootloaderHandleMessageResponse calibrate(const Calibrate *data) {
 }
 
 BootloaderHandleMessageResponse set_position_callback_configuration(const SetPositionCallbackConfiguration *data) {
+	joystick.position_callback_period              = data->period;
+	joystick.position_callback_value_has_to_change = data->value_has_to_change;
 
 	return HANDLE_MESSAGE_RESPONSE_EMPTY;
 }
 
 BootloaderHandleMessageResponse get_position_callback_configuration(const GetPositionCallbackConfiguration *data, GetPositionCallbackConfiguration_Response *response) {
-	response->header.length = sizeof(GetPositionCallbackConfiguration_Response);
+	response->header.length       = sizeof(GetPositionCallbackConfiguration_Response);
+	response->period              = joystick.position_callback_period;
+	response->value_has_to_change = joystick.position_callback_value_has_to_change;
 
 	return HANDLE_MESSAGE_RESPONSE_NEW_MESSAGE;
 }
 
 BootloaderHandleMessageResponse set_pressed_callback_configuration(const SetPressedCallbackConfiguration *data) {
+	joystick.pressed_callback_period              = data->period;
+	joystick.pressed_callback_value_has_to_change = data->value_has_to_change;
 
 	return HANDLE_MESSAGE_RESPONSE_EMPTY;
 }
 
 BootloaderHandleMessageResponse get_pressed_callback_configuration(const GetPressedCallbackConfiguration *data, GetPressedCallbackConfiguration_Response *response) {
-	response->header.length = sizeof(GetPressedCallbackConfiguration_Response);
+	response->header.length       = sizeof(GetPressedCallbackConfiguration_Response);
+	response->period              = joystick.pressed_callback_period;
+	response->value_has_to_change = joystick.pressed_callback_value_has_to_change;
 
 	return HANDLE_MESSAGE_RESPONSE_NEW_MESSAGE;
 }
@@ -89,12 +98,27 @@ BootloaderHandleMessageResponse get_pressed_callback_configuration(const GetPres
 bool handle_position_callback(void) {
 	static bool is_buffered = false;
 	static Position_Callback cb;
+	static int16_t last_x = 0;
+	static int16_t last_y = 0;
+	static uint32_t last_time = 0;
 
 	if(!is_buffered) {
-		tfp_make_default_header(&cb.header, bootloader_get_uid(), sizeof(Position_Callback), FID_CALLBACK_POSITION);
-		// TODO: Implement Position callback handling
+		if(joystick.position_callback_period == 0 ||
+		    !system_timer_is_time_elapsed_ms(last_time, joystick.position_callback_period)) {
+			return false;
+		}
 
-		return false;
+		tfp_make_default_header(&cb.header, bootloader_get_uid(), sizeof(Position_Callback), FID_CALLBACK_POSITION);
+		cb.x = last_x;
+		cb.y = last_y;
+
+		if(joystick.position_callback_value_has_to_change && (last_x == cb.x) && (last_y == cb.y)) {
+			return false;
+		}
+		
+		last_x    = cb.x;
+		last_y    = cb.y;
+		last_time = system_timer_get_ms();
 	}
 
 	if(bootloader_spitfp_is_send_possible(&bootloader_status.st)) {
@@ -111,12 +135,24 @@ bool handle_position_callback(void) {
 bool handle_pressed_callback(void) {
 	static bool is_buffered = false;
 	static Pressed_Callback cb;
+	static bool last_pressed = false;
+	static uint32_t last_time = 0;
 
 	if(!is_buffered) {
-		tfp_make_default_header(&cb.header, bootloader_get_uid(), sizeof(Pressed_Callback), FID_CALLBACK_PRESSED);
-		// TODO: Implement Pressed callback handling
+		if(joystick.pressed_callback_period == 0 ||
+		    !system_timer_is_time_elapsed_ms(last_time, joystick.pressed_callback_period)) {
+			return false;
+		}
 
-		return false;
+		tfp_make_default_header(&cb.header, bootloader_get_uid(), sizeof(Pressed_Callback), FID_CALLBACK_PRESSED);
+		cb.pressed = joystick.pressed;
+
+		if(joystick.pressed_callback_value_has_to_change && (last_pressed == cb.pressed)) {
+			return false;
+		}
+
+		last_pressed = cb.pressed;
+		last_time = system_timer_get_ms();
 	}
 
 	if(bootloader_spitfp_is_send_possible(&bootloader_status.st)) {
