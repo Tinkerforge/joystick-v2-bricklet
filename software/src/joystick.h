@@ -32,14 +32,14 @@
 #define JOYSTICK_CALIBRATION_Y_POS 2
 
 typedef struct {
-    int16_t x;
-    int16_t y;
-    bool pressed;
+	int16_t x;
+	int16_t y;
+	bool pressed;
 
-    bool calibrate;
-    
-    int16_t x_cal;
-    int16_t y_cal;
+	bool calibrate;
+
+	int16_t x_cal;
+	int16_t y_cal;
 
 	bool position_callback_value_has_to_change;
 	uint32_t position_callback_period;
