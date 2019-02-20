@@ -1,7 +1,7 @@
 /* joystick-v2-bricklet
- * Copyright (C) 2018 Olaf Lüke <olaf@tinkerforge.com>
+ * Copyright (C) 2017 Olaf Lüke <olaf@tinkerforge.com>
  *
- * main.c: Initialization for Joystick Bricklet 2.0
+ * config_joystick.h: Joystick configuration
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -19,27 +19,15 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <stdio.h>
-#include <stdbool.h>
+#ifndef CONFIG_JOYSTICK_H
+#define CONFIG_JOYSTICK_H
 
-#include "configs/config.h"
+#define JOYSTICK_SWITCH_PIN         P0_7
 
-#include "bricklib2/bootloader/bootloader.h"
-#include "bricklib2/hal/system_timer/system_timer.h"
-#include "bricklib2/logging/logging.h"
-#include "communication.h"
-#include "joystick.h"
+#define JOYSTICK_ADC_X_CHANNEL      4 // P2_11
+#define JOYSTICK_ADC_Y_CHANNEL      7 // P2_2
 
-int main(void) {
-	logging_init();
-	logd("Start Joystick Bricklet 2.0\n\r");
+#define JOYSTICK_ADC_IRQ            15
+#define JOYSTICK_ADC_IRQ_PRIORITY   0
 
-	communication_init();
-	joystick_init();
-
-	while(true) {
-		bootloader_tick();
-		communication_tick();
-		joystick_tick();
-	}
-}
+#endif

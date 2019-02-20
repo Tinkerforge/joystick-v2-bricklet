@@ -1,5 +1,5 @@
 /* joystick-v2-bricklet
- * Copyright (C) 2018 Olaf Lüke <olaf@tinkerforge.com>
+ * Copyright (C) 2019 Olaf Lüke <olaf@tinkerforge.com>
  *
  * communication.h: TFP protocol message handling
  *
@@ -53,19 +53,102 @@ void communication_init(void);
 #define JOYSTICK_V2_STATUS_LED_CONFIG_SHOW_STATUS 3
 
 // Function and callback IDs and structs
+#define FID_GET_POSITION 1
+#define FID_IS_PRESSED 2
+#define FID_CALIBRATE 3
+#define FID_SET_POSITION_CALLBACK_CONFIGURATION 4
+#define FID_GET_POSITION_CALLBACK_CONFIGURATION 5
+#define FID_SET_PRESSED_CALLBACK_CONFIGURATION 7
+#define FID_GET_PRESSED_CALLBACK_CONFIGURATION 8
 
+#define FID_CALLBACK_POSITION 6
+#define FID_CALLBACK_PRESSED 9
 
+typedef struct {
+	TFPMessageHeader header;
+} __attribute__((__packed__)) GetPosition;
+
+typedef struct {
+	TFPMessageHeader header;
+	int16_t x;
+	int16_t y;
+} __attribute__((__packed__)) GetPosition_Response;
+
+typedef struct {
+	TFPMessageHeader header;
+} __attribute__((__packed__)) IsPressed;
+
+typedef struct {
+	TFPMessageHeader header;
+	bool pressed;
+} __attribute__((__packed__)) IsPressed_Response;
+
+typedef struct {
+	TFPMessageHeader header;
+} __attribute__((__packed__)) Calibrate;
+
+typedef struct {
+	TFPMessageHeader header;
+	uint32_t period;
+	bool value_has_to_change;
+} __attribute__((__packed__)) SetPositionCallbackConfiguration;
+
+typedef struct {
+	TFPMessageHeader header;
+} __attribute__((__packed__)) GetPositionCallbackConfiguration;
+
+typedef struct {
+	TFPMessageHeader header;
+	uint32_t period;
+	bool value_has_to_change;
+} __attribute__((__packed__)) GetPositionCallbackConfiguration_Response;
+
+typedef struct {
+	TFPMessageHeader header;
+	int16_t x;
+	int16_t y;
+} __attribute__((__packed__)) Position_Callback;
+
+typedef struct {
+	TFPMessageHeader header;
+	uint32_t period;
+	bool value_has_to_change;
+} __attribute__((__packed__)) SetPressedCallbackConfiguration;
+
+typedef struct {
+	TFPMessageHeader header;
+} __attribute__((__packed__)) GetPressedCallbackConfiguration;
+
+typedef struct {
+	TFPMessageHeader header;
+	uint32_t period;
+	bool value_has_to_change;
+} __attribute__((__packed__)) GetPressedCallbackConfiguration_Response;
+
+typedef struct {
+	TFPMessageHeader header;
+	bool pressed;
+} __attribute__((__packed__)) Pressed_Callback;
 
 
 // Function prototypes
-
+BootloaderHandleMessageResponse get_position(const GetPosition *data, GetPosition_Response *response);
+BootloaderHandleMessageResponse is_pressed(const IsPressed *data, IsPressed_Response *response);
+BootloaderHandleMessageResponse calibrate(const Calibrate *data);
+BootloaderHandleMessageResponse set_position_callback_configuration(const SetPositionCallbackConfiguration *data);
+BootloaderHandleMessageResponse get_position_callback_configuration(const GetPositionCallbackConfiguration *data, GetPositionCallbackConfiguration_Response *response);
+BootloaderHandleMessageResponse set_pressed_callback_configuration(const SetPressedCallbackConfiguration *data);
+BootloaderHandleMessageResponse get_pressed_callback_configuration(const GetPressedCallbackConfiguration *data, GetPressedCallbackConfiguration_Response *response);
 
 // Callbacks
-
+bool handle_position_callback(void);
+bool handle_pressed_callback(void);
 
 #define COMMUNICATION_CALLBACK_TICK_WAIT_MS 1
-#define COMMUNICATION_CALLBACK_HANDLER_NUM 0
+#define COMMUNICATION_CALLBACK_HANDLER_NUM 2
 #define COMMUNICATION_CALLBACK_LIST_INIT \
+	handle_position_callback, \
+	handle_pressed_callback, \
 
 
 #endif
