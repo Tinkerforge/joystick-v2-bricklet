@@ -1,0 +1,26 @@
+Needs["NETLink`"]
+LoadNETAssembly["Tinkerforge",NotebookDirectory[]<>"../../.."]
+
+host="localhost"
+port=4223
+uid="XYZ"(*Change XYZ to the UID of your Joystick Bricklet 2.0*)
+
+(*Create IPConnection and device object*)
+ipcon=NETNew["Tinkerforge.IPConnection"]
+j=NETNew["Tinkerforge.BrickletJoystickV2",uid,ipcon]
+ipcon@Connect[host,port]
+
+(*Callback function for pressed callback*)
+PressedCB[sender_,pressed_]:=
+ Print["Pressed: "<>ToString[pressed]]
+AddEventHandler[j@PressedCallback,PressedCB]
+
+(*Set period for pressed callback to 0.01s (10ms)*)
+j@SetPressedCallbackConfiguration[10,True]
+
+Input["Click OK to exit"]
+
+(*Clean up*)
+ipcon@Disconnect[]
+ReleaseNETObject[j]
+ReleaseNETObject[ipcon]
