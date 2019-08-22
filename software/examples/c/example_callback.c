@@ -33,7 +33,7 @@ int main(void) {
 	// Register pressed callback to function cb_pressed
 	joystick_v2_register_callback(&j,
 	                              JOYSTICK_V2_CALLBACK_PRESSED,
-	                              (void *)cb_pressed,
+	                              (void (*)(void))cb_pressed,
 	                              NULL);
 
 	// Set period for pressed callback to 0.01s (10ms)
