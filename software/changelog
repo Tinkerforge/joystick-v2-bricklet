@@ -4,5 +4,5 @@
 2019-05-29: 2.0.1 (8618eed)
 - Fix SPITFP IRQ race condition with other higher prio IRQs (through bricklib2)
 
-2019-09-09: 2.0.2 (TBD)
+2019-09-09: 2.0.2 (9f4d34d)
 - Fix bug in callback handler
