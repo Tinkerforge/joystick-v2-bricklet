@@ -109,8 +109,8 @@ bool handle_position_callback(void) {
 		}
 
 		tfp_make_default_header(&cb.header, bootloader_get_uid(), sizeof(Position_Callback), FID_CALLBACK_POSITION);
-		cb.x = last_x;
-		cb.y = last_y;
+		cb.x = joystick.x;
+		cb.y = joystick.y;
 
 		if(joystick.position_callback_value_has_to_change && (last_x == cb.x) && (last_y == cb.y)) {
 			return false;
