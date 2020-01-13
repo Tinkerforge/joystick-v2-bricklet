@@ -25,5 +25,5 @@ if __name__ == "__main__":
     # Set period for pressed callback to 0.01s (10ms)
     j.set_pressed_callback_configuration(10, True)
 
-    raw_input("Press key to exit\n") # Use input() in Python 3
+    input("Press key to exit\n") # Use raw_input() in Python 2
     ipcon.disconnect()
