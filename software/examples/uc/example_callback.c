@@ -18,15 +18,13 @@ void example_setup(TF_HalContext *hal) {
 	// Create device object
 	check(tf_joystick_v2_create(&j, UID, hal), "create device object");
 
-
 	// Register pressed callback to function pressed_handler
 	tf_joystick_v2_register_pressed_callback(&j,
-	                                        pressed_handler,
-	                                        NULL);
+	                                         pressed_handler,
+	                                         NULL);
 
 	// Set period for pressed callback to 0.01s (10ms)
 	tf_joystick_v2_set_pressed_callback_configuration(&j, 10, true);
-
 }
 
 void example_loop(TF_HalContext *hal) {
