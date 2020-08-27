@@ -5,14 +5,18 @@
 
 void check(int rc, const char* msg);
 
+void example_setup(TF_HalContext *hal);
+void example_loop(TF_HalContext *hal);
+
+
 // Callback function for pressed callback
-void pressed_handler(TF_JoystickV2 *device, bool pressed, void *user_data) {
+static void pressed_handler(TF_JoystickV2 *device, bool pressed, void *user_data) {
 	(void)device; (void)user_data; // avoid unused parameter warning
 
 	tf_hal_printf("Pressed: %s\n", pressed ? "true" : "false");
 }
 
-TF_JoystickV2 j;
+static TF_JoystickV2 j;
 
 void example_setup(TF_HalContext *hal) {
 	// Create device object
