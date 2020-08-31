@@ -19,8 +19,8 @@ void example_setup(TF_HalContext *hal) {
 	int16_t x, y;
 	check(tf_joystick_v2_get_position(&j, &x, &y), "get position");
 
-	tf_hal_printf("Position [X]: %d\n", x);
-	tf_hal_printf("Position [Y]: %d\n", y);
+	tf_hal_printf("Position [X]: %I16d\n", x);
+	tf_hal_printf("Position [Y]: %I16d\n", y);
 }
 
 void example_loop(TF_HalContext *hal) {
